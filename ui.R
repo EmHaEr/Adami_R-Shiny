@@ -86,13 +86,5 @@ ui <- fluidPage(
     br(),
     h2("PCA"),
     uiOutput("shiny"),
-    br(),
-    h2("ANJING"),
-    br(),
-    h2("ANJING"),
-    br(),
-    h2("ANJING"),
-    br(),
-    h2("ANJING"),
     br()
 )
