@@ -4,7 +4,7 @@ server <- function(input, output, session)
   
   output$shiny <- renderUI(
     {
-      source("PCA.R")
+      source("shiny.R")
       
       callModule(server_shiny, id = "shiny")
       
