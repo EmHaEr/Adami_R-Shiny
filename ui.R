@@ -21,7 +21,7 @@ thematic::thematic_shiny(font = "auto")
 ui <- fluidPage(
     theme = bs_theme(),
     #Judul Aplikasi
-    h1("Aplikasi Data Analisis Menggunakan Metode PCA", style="
+    h1("Aplikasi Analisis Data Menggunakan Metode PCA & Klasifikasi Data Menggunakan Metode Naive Bayes", style="
     font-family: 'cursive';
     font-weight: bold;
     font-size:50px;
@@ -37,7 +37,7 @@ ui <- fluidPage(
     br(),
 
     #Credit
-    h2("Created by : Muhd Humam Rhamadhani", style="
+    h2("Created by : Muhd Humam Rhamadhani & Muhammad Daffa Muafa", style="
     font-family: 'cursive';
     font-size:20px;
     text-align:center
@@ -86,5 +86,7 @@ ui <- fluidPage(
     br(),
     h2("PCA"),
     uiOutput("shiny"),
+    br(),
+    h2("Naive Bayes"),
     br()
 )
