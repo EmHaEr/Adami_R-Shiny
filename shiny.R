@@ -146,41 +146,6 @@ ui_shiny <- function(id)
 
 server_shiny <- function(input, output, session)
 {
-#############################
-######## Naive Bayes ########
-#############################
-  myData <- reactive(
-    {
-      take_file <- input$take_file
-      
-      if (is.null(take_file))
-        return(NULL)
-      
-      d <- read.csv(take_file$datapath, sep = input$pemisah_variabel)
-      return(d)
-    }) 
-  
-  output$tampilan_dataset2 <- DT::renderDT(
-    {
-      import_data <- myData()
-      
-      DT::datatable(import_data)
-    })
-  
-  output$profil_dataset2 <- renderPrint(
-    {
-      profil_dataset2 <- myData()
-      
-      glimpse(profil_dataset2)
-    })
-  
-  output$summary_dataset2 <- renderPrint(
-    {
-      summary_dataset2 <- myData()
-      
-      summary(summary_dataset2)
-      skim(summary_dataset2)
-    })
 
 #############################
 ########### PCA #############
