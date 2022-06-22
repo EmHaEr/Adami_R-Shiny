@@ -1,0 +1,83 @@
+---
+title: "Report Hasil Aplikasi ADAMI"
+author: "daffa"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+Berikut adalah beberapa hasil report yang dapat ditampilkan oleh aplikasi ADAMI.
+Jika terdapat informasi yang kurang atau tidak rapi, hal tersebut terjadi karena keterbatasan sistem
+
+
+#Data Anda
+```{r echo = FALSE, comment = NA}
+# print(myData())
+```
+
+#Summary Attribute Data Anda
+```{r echo = FALSE, comment = NA}
+summary(myData())
+```
+
+#Summary Overall
+```{r echo = FALSE, comment = NA}
+summary_dataset <- myData()
+       summary(summary_dataset)
+       skim(summary_dataset)
+```
+
+#Comparison
+```{r echo = FALSE, comment = NA}
+compare()
+```
+
+#Model
+```{r echo = FALSE, comment = NA}
+NB_Model()
+
+```
+
+#Model Summary
+```{r echo = FALSE, comment = NA}
+summary(NB_Model())
+
+```
+
+#Overall Statistics
+```{r echo = FALSE, comment = NA}
+cm()
+
+```
+
+#Class Statistics
+```{r echo = FALSE, comment = NA}
+cm2()
+
+```
+
+#Table Statistics
+```{r echo = FALSE, comment = NA}
+cm3()
+
+```
+
+#Data Splitting (Percentage)
+```{r echo = FALSE, comment = NA}
+splitSlider()
+helpText("Dalam Persen")
+
+```
+
+#Cross Tabulasi
+```{r echo = FALSE, comment = NA}
+CrossTable(price_predict(), act())
+
+```
+
+#Profile Dataset
+```{r echo = FALSE, comment = NA}
+profil_dataset <- myData()
+       glimpse(profil_dataset)
+
+```
+
