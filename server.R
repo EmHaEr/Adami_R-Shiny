@@ -5,29 +5,12 @@ server <- function(input, output, session)
     data <- reactive(
     {
       upload_data <- input$upload_data
+      
       if(is.null(upload_data))
         return(NULL)
-      pemisah_variabel = input$pemisah_variabel
-    
-     if(pemisah_variabel == 'xlsx')
-       {
-        inFile <- input$upload_data
-        if(is.null(inFile))
-          return(NULL)
-        file.rename(inFile$datapath,
-                  paste(inFile$datapath, ".xlsx", sep=""))
-        data <- read_excel(paste(inFile$datapath, ".xlsx", sep="",
-                                 row.names = 1), 1)
       
-        return(data)
-       }
-      
-      if(pemisah_variabel != 'xlsx')
-      {
-       data <- read.csv(upload_data$datapath, sep = input$pemisah_variabel)
-      
-       return(data)
-      }
+      data = read.csv(upload_data$datapath, sep = input$pemisah_variabel)
+      return(data)
     })
   
   output$data2 <- DT::renderDT(
@@ -44,6 +27,9 @@ server <- function(input, output, session)
     return(data_name)
   }
   
+  #############################
+  ########## VARIABLE ########
+  #############################
   output$variable_selectizeinput <- renderUI(
     {
       if(is.null(data3()))
@@ -60,9 +46,7 @@ server <- function(input, output, session)
   output$data_selectizeinput <- DT::renderDT(
     {
       data2 <- data()
-      
       data_selected = data2[c(input$selected_selectizeinput)]
-      
       print(data_selected)
     })
   
@@ -75,7 +59,7 @@ server <- function(input, output, session)
     
     content = function(file)
     {
-      write.csv(data_selectizeinput(),file)
+      write.csv(data_selected2(),file)
     }
   )
   
@@ -84,21 +68,21 @@ server <- function(input, output, session)
   #############################
   dataset <- reactive(
     {
-      upload_data <- input$upload_data
+      upload_dataset <- input$upload_dataset
       
-      if(is.null(upload_data))
+      if(is.null(upload_dataset))
         return(NULL)
       
-      data = read.csv(upload_data$datapath, sep = input$pemisah_variabel, 
+      data = read.csv(upload_dataset$datapath, sep = input$pemisah_variabel2, 
                       row.names = 1)
       return(data)
     })
   
   output$tampilan_dataset <- DT::renderDT(
     {
-      data_terpilih <- dataset()
+      data_selected2 <- dataset()
       
-      DT::datatable(data_terpilih)
+      DT::datatable(data_selected2)
     })
   
   output$profil_dataset <- renderPrint(

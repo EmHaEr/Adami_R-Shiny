@@ -17,6 +17,7 @@ library(rsconnect)
 library(dplyr)
 library(skimr)
 library(visdat)
+library(readxl)
 #Library PCA
 library(factoextra)
 library(corrplot)
@@ -36,8 +37,7 @@ ui <- fluidPage(
                       accept = c(
                           "text/csv",
                           "text/comma-separated-values,text/plain",
-                          ".csv",
-                          ".xlsx")
+                          ".csv")
             ),
             hr(),
             h6("Belum memiliki dataset ? Cari di bawah ini"),
@@ -85,7 +85,7 @@ ui <- fluidPage(
                      ),
                      br(),
                      sidebarPanel(
-                         fileInput("upload_data", "Choose .txt/.csv file",
+                         fileInput("upload_dataset", "Choose .txt/.csv file",
                                    accept = c("text/csv",
                                               "text/comma-separated-values",
                                               ".csv"))
@@ -93,7 +93,7 @@ ui <- fluidPage(
             ),
             #Tab Panel Dataset
             tabPanel("Dataset",
-                     radioButtons("pemisah_variabel", "Separator",
+                     radioButtons("pemisah_variabel2", "Separator",
                                   choices = c(Comma = ",",
                                               Semicolon = ";",
                                               Tab = "\t"),
