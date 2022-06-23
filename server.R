@@ -7,92 +7,97 @@ server <- function(input, output, session)
       if(is.null(upload_data))
         return(NULL)
       
-      data = read.csv(upload_data$datapath, sep = input$pemisah_variabel)
+      data = read.csv(upload_data$datapath, sep = input$pemisah_variabel,
+                      row.names = 1)
       return(data)
     })
   
   output$data2 <- DT::renderDT(
     {
-      data()
+       import_data <- data() 
+       
+       DT::datatable(import_data)
     })
   
-  data3 <- function()
-  {
-    data2 <- data()
-    
-    data_name <- colnames(data2)
-    
-    return(data_name)
-  }
+  InputDataset<- data
+ 
+  output$variabel <-  renderUI(
+    {
+      box(selectizeInput("variabel",
+                        label = "Pilih variabel (tekan backspace untuk menghapus) :",
+                        choices = names(InputDataset()),
+                        selected = if(input$all) names(InputDataset()),
+                        multiple = TRUE),
+         solidHeader = TRUE, width = "12", title = "Variabel")
+    })
+  
+  
+  dataBaru <- reactive(
+   {
+     nama <- InputDataset()
+     nama[input$variabel]
+   })
+
   
   #############################
   ########## VARIABLE ########
   #############################
   output$variable_selectizeinput <- renderUI(
-    {
-      if(is.null(data3()))
-        return(NULL)
-      
-      if(is.null(length(data3()) == 0 ))
-        return(NULL)
-      
-      selectizeInput('selected_selectizeinput', 'Pilih Variabel (tekan backspace untuk menghapus) :', 
-                     choices = c(data3()), selected=c(), 
-                     multiple = TRUE)
-    })
+     {
+        if(is.null(data3()))
+           return(NULL)
+        
+        if(is.null(length(data3()) == 0 ))
+           return(NULL)
+        
+        selectizeInput('selected_selectizeinput', 'Pilih Variabel (tekan backspace untuk menghapus) :', 
+                       choices = c(data3()), selected=c(), 
+                       multiple = TRUE)
+     })
+  
   
   output$data_selectizeinput <- DT::renderDT(
-    {
-      data2 <- data()
-      data_selected = data2[c(input$selected_selectizeinput)]
-      print(data_selected)
-    })
+     {
+        data2 <- data()
+        data_selected = data2[c(input$variabel)]
+        print(data_selected)
+     })
   
   output$download_data <- downloadHandler(
-    filename = function()
-    {
-      paste("Data PCA", "csv", sep = ".")
-      
-    },
-    
-    content = function(file)
-    {
-      write.csv(data_selected2(),file)
-    }
-  )
+     filename = function()
+     {
+        paste("Data PCA", "csv", sep = ".")
+        
+     },
+     
+     content = function(file)
+     {
+        write.csv(dataBaru(),file)
+     })
   
   #############################
   ########### PCA #############
   #############################
-  dataset <- reactive(
-    {
-      upload_dataset <- input$upload_dataset
-      
-      if(is.null(upload_dataset))
-        return(NULL)
-      
-      data = read.csv(upload_dataset$datapath, sep = input$pemisah_variabel2, 
-                      row.names = 1)
-      return(data)
-    })
   
   output$tampilan_dataset <- DT::renderDT(
-    {
-      data_selected2 <- dataset()
-      
-      DT::datatable(data_selected2)
-    })
+     {
+        tampil <- data()
+        
+        data_terpilih = tampil[c(variabel)]
+        
+        print(data_terpilih)
+     })
   
   output$profil_dataset <- renderPrint(
     {
-      profil_dataset <- dataset()
+      profil_dataset <- dataBaru()
       
       glimpse(profil_dataset)
     })
   
   output$summary_dataset <- renderPrint(
     {
-      summary_dataset <- dataset()
+      summary_dataset <- dataBaru()
       
       summary(summary_dataset)
       skim(summary_dataset)
@@ -100,7 +105,7 @@ server <- function(input, output, session)
   
   output$hist_dataset <- renderPlot(
     {
-      hist_dataset <- dataset()
+      hist_dataset <- dataBaru()
       
       vis_miss(hist_dataset)
       vis_dat(hist_dataset)
@@ -113,7 +118,7 @@ server <- function(input, output, session)
   
   output$hasil_modelPCA <- DT::renderDT(
     {
-      hasil_modelPCA <- dataset()
+      hasil_modelPCA <- dataBaru()
       
       pcaModel <- prcomp(hasil_modelPCA, scale. = TRUE, center = TRUE)
       pcaModel$rotation
@@ -121,7 +126,7 @@ server <- function(input, output, session)
   
   output$hasil_summaryPCA <- renderPrint(
     {
-      hasil_summaryPCA <- dataset()
+      hasil_summaryPCA <- dataBaru()
       
       pcaModel <- prcomp(hasil_summaryPCA, scale. = TRUE, center = TRUE)
       pcaModel$rotation
@@ -131,7 +136,7 @@ server <- function(input, output, session)
   
   output$hasil_predictPCA <- DT::renderDT(
     {
-      hasil_predictPCA <- dataset()
+      hasil_predictPCA <- dataBaru()
       
       pcaModel <- prcomp(hasil_predictPCA, scale. = TRUE, center = TRUE)
       pcaModel$rotation
@@ -141,7 +146,7 @@ server <- function(input, output, session)
   
   output$eigenvalue_PCA <- renderPrint(
     {
-      eigenvalue_PCA <- dataset()
+      eigenvalue_PCA <- dataBaru()
       
       modelPCA <- prcomp(eigenvalue_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -151,7 +156,7 @@ server <- function(input, output, session)
   
   output$coord_PCA <- renderPrint(
     {
-      coord_PCA <- dataset()
+      coord_PCA <- dataBaru()
       
       modelPCA <- prcomp(coord_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -164,7 +169,7 @@ server <- function(input, output, session)
   
   output$cos2_PCA <- renderPrint(
     {
-      cos2_PCA <- dataset()
+      cos2_PCA <- dataBaru()
       
       modelPCA <- prcomp(cos2_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -177,7 +182,7 @@ server <- function(input, output, session)
   
   output$contrib_PCA <- renderPrint(
     {
-      contrib_PCA <- dataset()
+      contrib_PCA <- dataBaru()
       
       modelPCA <- prcomp(contrib_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -190,7 +195,7 @@ server <- function(input, output, session)
   
   output$screeplot_PCA <- renderPlot(
     {
-      screeplot_PCA <- dataset()
+      screeplot_PCA <- dataBaru()
       
       modelPCA <- prcomp(screeplot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -200,7 +205,7 @@ server <- function(input, output, session)
   
   output$cos2plot_PCA <- renderPlot(
     {
-      cos2plot_PCA <- dataset()
+      cos2plot_PCA <- dataBaru()
       
       modelPCA <- prcomp(cos2plot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -210,7 +215,7 @@ server <- function(input, output, session)
   
   output$individuals_PCA <- renderPlot(
     {
-      biplot_PCA <- dataset()
+      biplot_PCA <- dataBaru()
       
       modelPCA <- prcomp(biplot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -225,7 +230,7 @@ server <- function(input, output, session)
   
   output$contribplot_PCA <- renderPlot(
     {
-      contribplot_PCA <- dataset()
+      contribplot_PCA <- dataBaru()
       
       modelPCA <- prcomp(contribplot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -235,7 +240,7 @@ server <- function(input, output, session)
   
   output$variables_PCA <- renderPlot(
     {
-      variables_PCA <- dataset()
+      variables_PCA <- dataBaru()
       
       modelPCA <- prcomp(variables_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
@@ -250,7 +255,7 @@ server <- function(input, output, session)
   
   output$biplot_PCA <- renderPlot(
     {
-      biplot_PCA <- dataset()
+      biplot_PCA <- dataBaru()
       
       modelPCA <- prcomp(biplot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
