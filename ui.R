@@ -23,12 +23,10 @@ library(factoextra)
 library(corrplot)
 library(ggplot2)
 
-thematic::thematic_shiny(font = "auto")
 
 ui <- fluidPage(
-    theme = bs_theme(),
+  shinythemes::themeSelector(),
 
-    
     #Output
     h2("Input Data"),
     sidebarLayout(

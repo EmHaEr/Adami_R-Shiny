@@ -1,7 +1,5 @@
 server <- function(input, output, session)
 {
-  bs_themer()
-  
     data <- reactive(
     {
       upload_data <- input$upload_data
