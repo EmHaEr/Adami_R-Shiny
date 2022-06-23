@@ -1,6 +1,6 @@
 ---
 title: "Report Hasil Aplikasi ADAMI"
-author: "daffa"
+author: "Aplikasi Data Mining"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
