@@ -110,11 +110,21 @@ server <- function(input, output, session)
       vis_miss(hist_dataset)
       vis_dat(hist_dataset)
       
-      par(mfrow=c(3,4))
+      par(mfrow=c(2,4))
       for(i in 1:ncol(hist_dataset)) {
         hist(hist_dataset[, i], main = paste(colnames(hist_dataset[i])), xlab = "")
       }
     })
+  
+  output$hasil_summaryPCA <- renderPrint(
+     {
+        hasil_summaryPCA <- dataBaru()
+        
+        pcaModel <- prcomp(hasil_summaryPCA, scale. = TRUE, center = TRUE)
+        pcaModel$rotation
+        
+        summary(pcaModel)
+     })
   
   output$hasil_modelPCA <- DT::renderDT(
     {
@@ -124,15 +134,26 @@ server <- function(input, output, session)
       pcaModel$rotation
     })
   
-  output$hasil_summaryPCA <- renderPrint(
-    {
-      hasil_summaryPCA <- dataBaru()
-      
-      pcaModel <- prcomp(hasil_summaryPCA, scale. = TRUE, center = TRUE)
-      pcaModel$rotation
-      
-      summary(pcaModel)
-    })
+  dataModel <- reactive(
+     {
+        hasil_modelPCA <- dataBaru()
+        
+        pcaModel <- prcomp(hasil_modelPCA, scale. = TRUE, center = TRUE)
+        pcaModel$rotation
+     })
+  
+  output$download_model <- downloadHandler(
+     filename = function()
+     {
+        paste("Data_Model PCA", "csv", sep = ".")
+        
+     },
+     
+     content = function(file)
+     {
+              write.csv(dataModel(),file)
+     })
+  
   
   output$hasil_predictPCA <- DT::renderDT(
     {
@@ -143,6 +164,28 @@ server <- function(input, output, session)
       
       predict_PCA=predict(pcaModel, newdata=hasil_predictPCA)
     })
+  
+  dataPredict <- reactive(
+     {
+        hasil_predictPCA <- dataBaru()
+        
+        pcaModel <- prcomp(hasil_predictPCA, scale. = TRUE, center = TRUE)
+        pcaModel$rotation
+        
+        predict_PCA=predict(pcaModel, newdata=hasil_predictPCA)
+     })
+  
+  output$download_predict <- downloadHandler(
+     filename = function()
+     {
+        paste("Data_Predict PCA", "csv", sep = ".")
+        
+     },
+     
+     content = function(file)
+     {
+        write.csv(dataPredict(),file)
+     })
   
   output$eigenvalue_PCA <- renderPrint(
     {
@@ -267,4 +310,105 @@ server <- function(input, output, session)
                       col.ind = "#000000")
     })
   
-}
+  #############################
+  ######## SCREENSHOT  ########
+  #############################
+  
+  observeEvent(input$cetak_gambar1,
+               screenshot(
+                  selector = "#profil_dataset",
+                  filename = "Profil Dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar2,
+               screenshot(
+                  selector = "#summary_dataset",
+                  filename = "Summary Dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar3,
+               screenshot(
+                  selector = "#hist_dataset",
+                  filename = "Histogram Dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar4,
+               screenshot(
+                  selector = "#eigenvalue_PCA",
+                  filename = "Eigenvalue",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar5,
+               screenshot(
+                  selector = "#coord_PCA",
+                  filename = "Coordinates",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar6,
+               screenshot(
+                  selector = "#cos2_PCA",
+                  filename = "Squared Cosinus",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar7,
+               screenshot(
+                  selector = "#contrib_PCA",
+                  filename = "Contribution",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+  
+  observeEvent(input$cetak_gambar8,
+               screenshot(
+                  selector = "#Visualisasi",
+                  filename = "Visualisasi PCA",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+               )
+  )
+ 
+  
+} #akhir function

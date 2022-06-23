@@ -42,9 +42,12 @@ ui <- fluidPage(
                           ".csv")
             ),
             hr(),
-            h4("Belum memiliki dataset ?"),
+            tags$b("Belum memiliki dataset ?"),
+            br(),
             a(href="https://www.kaggle.com/", "Kaggle"),
+            br(),
             a(href="https://data.world/", "Data World"),
+            br(),
             a(href="https://drive.google.com/file/d/1EoPQtb7iq3ZodsZqZJ1lpJxYCmfvZ6mh/view?usp=sharing", "Factoextra"),
             hr(),
             radioButtons("pemisah_variabel", "Separator",
@@ -63,6 +66,8 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
           uiOutput("variabel"),
+          tags$b("Nilai pada seluruh variabel data harus bernilai numerik", style=
+               "text-align:center"),
           div(checkboxInput('all', 'Pilih Semua Variabel', value = FALSE), style = "text-align:center"),
           hr(),
           div(style = "text-align:center", downloadButton("download_data", "Download Data"))
@@ -82,15 +87,18 @@ ui <- fluidPage(
             tabPanel("Dataset",
                      h3("Profil Dataset", style=
                             "text-align:center"),
-                     verbatimTextOutput("profil_dataset"),
+                     div(withSpinner(verbatimTextOutput("profil_dataset"))),
+                     div(actionButton('cetak_gambar1','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Summary Dataset", style=
                             "text-align:center"),
                      div(withSpinner(verbatimTextOutput("summary_dataset"))),
+                     div(actionButton('cetak_gambar2','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Histogram Dataset", style=
                             "text-align:center"),
-                     div(withSpinner(plotOutput("hist_dataset")))
+                     div(withSpinner(plotOutput("hist_dataset"))),
+                     div(actionButton('cetak_gambar3','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
             ),
             #Tab Panel PCA
             tabPanel("PCA",
@@ -100,6 +108,7 @@ ui <- fluidPage(
                      h5("Nilai faktor variabel yang dijelaskan oleh masing-masing
                         principal component ke tiap dimensi",
                         style= "text-align:center"),
+                     div(actionButton('cetak_gambar4','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Coordinates", style=
                             "text-align:center"),
@@ -107,6 +116,7 @@ ui <- fluidPage(
                      h5("Nilai komponen yang menggambarkan titik asal (koordinat) pada tiap variabel 
                         pada principal component ke tiap dimensi",
                         style= "text-align:center"),
+                     div(actionButton('cetak_gambar5','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Cos2", style=
                             "text-align:center"),
@@ -114,6 +124,7 @@ ui <- fluidPage(
                      h5("Nilai komponen terhadap kuadrat jarak observasi (kurva cosinus) ke coordinates
                         pada principal component ke tiap dimensi",
                         style= "text-align:center"),
+                     div(actionButton('cetak_gambar6','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Contribution", style=
                             "text-align:center"),
@@ -121,6 +132,7 @@ ui <- fluidPage(
                      h5("Nilai komponen yang diperoleh dari perbandingan nilai komponen cos2 dengan eigenvalue
                         pada principal component ke tiap dimensi",
                         style= "text-align:center"),
+                     div(actionButton('cetak_gambar7','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                      hr(),
                      h3("Summary", style=
                             "text-align:center"),
@@ -131,17 +143,19 @@ ui <- fluidPage(
                      h3("Model", style=
                             "text-align:center"),
                      div(class = "hbar", withSpinner(DT::DTOutput("hasil_modelPCA"))),
-                     h5("",
+                     h5("tes",
                         style= "text-align:center"),
+                     div(style = "text-align:center", downloadButton("download_model", "Download Data")),
                      hr(),
                      h3("Predict", style=
                             "text-align:center"),
                      div(class = "hbar", withSpinner(DT::DTOutput("hasil_predictPCA"))),
                      h5("tes",
                         style= "text-align:center"),
+                     div(style = "text-align:center", downloadButton("download_predict", "Download Data"))
             ),
             #Tab Panel Visualisasi PCA
-            tabPanel("Visualisasi",
+            tabPanel("Visualisasi", id = "Visualisasi",
                      h3("Scree Plot", style=
                             "text-align:center"),
                      div(withSpinner(plotOutput("screeplot_PCA"))),
@@ -171,6 +185,7 @@ ui <- fluidPage(
                      div(withSpinner(plotOutput("biplot_PCA"))),
                      h5("Menggambarkan gabungan dari Individuals Plot dan Variables Plot",
                         style= "text-align:center"),
+                     div(actionButton('cetak_gambar8','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
             )
         ) #navlistPanel
     ), #fluidPage
