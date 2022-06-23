@@ -1,83 +1,114 @@
 ---
 title: "Report Hasil Aplikasi ADAMI"
-author: "daffa"
+author: "Aplikasi Data Mining"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
-Berikut adalah beberapa hasil report yang dapat ditampilkan oleh aplikasi ADAMI.
+### Berikut adalah beberapa hasil report yang dapat ditampilkan oleh aplikasi ADAMI.
 Jika terdapat informasi yang kurang atau tidak rapi, hal tersebut terjadi karena keterbatasan sistem
 
 
-#Data Anda
-```{r echo = FALSE, comment = NA}
-# print(myData())
+```{css echo = FALSE, comment = NA}
+h1 {color: red;}
 ```
 
-#Summary Attribute Data Anda
+# Nama Anda \textcolor{red}{red}
+
 ```{r echo = FALSE, comment = NA}
-summary(myData())
+paste(input$txtInput)
 ```
 
-#Summary Overall
+# Struktur Data Anda
+
 ```{r echo = FALSE, comment = NA}
-summary_dataset <- myData()
-       summary(summary_dataset)
-       skim(summary_dataset)
+str(input$take_file)
 ```
 
-#Comparison
-```{r echo = FALSE, comment = NA}
-compare()
-```
+# Data Splitting (Percentage)
 
-#Model
-```{r echo = FALSE, comment = NA}
-NB_Model()
-
-```
-
-#Model Summary
-```{r echo = FALSE, comment = NA}
-summary(NB_Model())
-
-```
-
-#Overall Statistics
-```{r echo = FALSE, comment = NA}
-cm()
-
-```
-
-#Class Statistics
-```{r echo = FALSE, comment = NA}
-cm2()
-
-```
-
-#Table Statistics
-```{r echo = FALSE, comment = NA}
-cm3()
-
-```
-
-#Data Splitting (Percentage)
 ```{r echo = FALSE, comment = NA}
 splitSlider()
 helpText("Dalam Persen")
 
 ```
 
-#Cross Tabulasi
-```{r echo = FALSE, comment = NA}
-CrossTable(price_predict(), act())
+# Summary Overall
 
+```{r echo = FALSE, comment = NA}
+summary_dataset <- myData()
+       summary(summary_dataset)
+       skim(summary_dataset)
 ```
 
-#Profile Dataset
+# Profile Dataset
+
 ```{r echo = FALSE, comment = NA}
 profil_dataset <- myData()
        glimpse(profil_dataset)
 
 ```
+
+
+# Model 
+
+```{r echo = FALSE, comment = NA}
+NB_Model()
+
+```
+
+# Model Summary
+
+```{r echo = FALSE, comment = NA}
+summary(NB_Model())
+
+```
+
+# Cross Tabulasi
+
+```{r echo = FALSE, comment = NA}
+CrossTable(price_predict(), act())
+
+```
+
+
+# Overall Statistics
+
+```{r echo = FALSE, comment = NA}
+cm()
+
+```
+
+
+# Class Statistics
+
+```{r echo = FALSE, comment = NA}
+cm2()
+
+```
+
+# Table Statistics
+
+```{r echo = FALSE, comment = NA}
+cm3()
+
+```
+
+
+<!-- # Summary Attribute Data Anda -->
+
+<!-- ```{r echo = FALSE, comment = NA} -->
+<!-- summary(myData()) -->
+<!-- ``` -->
+
+
+<!-- #Comparison -->
+<!-- ```{r echo = FALSE, comment = NA} -->
+<!-- compare() -->
+<!-- ``` -->
+
+
+
+
+
 

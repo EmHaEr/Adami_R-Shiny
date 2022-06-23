@@ -12,11 +12,6 @@ library(shinyscreenshot)
 library(shinyanimate)
 
 title <-  tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=naive+bayes&btnG=',icon("code"),'Naive Bayes',style="color:white;")
-title2 <- tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=decision+tree&btnG=',icon("code"),'Decision Tree',style="color:white;")
-title3 <- tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=Support+Vector+Machine&btnG=',icon("code"),'Support Vector Machine',style="color:white;")
-title4 <- tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0,5&q=K-nearest+neighbors',icon("code"),'K-Nearast Neighbors',style="color:white;")
-title5 <- tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=random+forest&btnG=',icon("code"),'Random Forest',style="color:white;")
-title6 <- tags$a(href='https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=logistic+regression&btnG=',icon("code"),'Logistic Regression',style="color:white;")
 
 ui <- fluidPage(
   
@@ -43,7 +38,7 @@ ui <- fluidPage(
           ),
   
 ################################## Selamat Datang #####################################################################
-        div(id="shiny17", h1("Selamat Datang di Aplikasi", style="
+        div(id="shiny17", h1("Selamat Datang di Aplikasi ADAMI", style="
             text-align:center; 
             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09; 
             font-family:Coolvetica
@@ -61,14 +56,14 @@ ui <- fluidPage(
       tags$hr(),
       
   
-      navbarPage("Classification",
+      navbarPage("Machine Learning",
                  selected = "Masukkan Data",
                  inverse = T,
                  
                  
            tabPanel("Tentang", 
                     fluidPage(
-                      img(src='tentangg.png', width=1600, height=550),
+                      div(img(src='tentangg.png',height="100%", width="100%",style="display: block; margin-left: auto; margin-right: auto;")),
                       div(h4("Aplikasi ADAMI adalah aplikasi data mining berbasis WEB yang dapat membantu penggunanya dalam mengolah data yang dimiliki secara mudah.
                                  Pengolahan data pada aplikasi ADAMI menggunakan Algoritma Naive Bayes Classifier. 
                                  Aplikasi ini dirancang agar user friendly dan akan memudahkan pengguna dalam memahami setiap elemen dalam User Interface. 
@@ -181,7 +176,7 @@ ui <- fluidPage(
         sidebarPanel(
             textInput("txtInput","Masukkan Nama Anda (Tidak Wajib)", ),
             helpText("Masukkan Dataset Anda (Ukuran maksimal 5MB)"),
-            fileInput("take_file", "Choose .txt/.csv/ File",
+            fileInput("take_file", "Pilih File .txt/ .csv/",
             accept = c(
             "text/csv",
             "text/comma-separated-values,text/plain",
@@ -198,15 +193,21 @@ ui <- fluidPage(
               ),
               selected = ",", inline = TRUE
               ),
+            hr(),
             h6("Belum memiliki dataset?"),
-            a(href="https://www.kaggle.com", "[Web Dataset 1]", style='color:red'),
-            a(href="https://archive.ics.uci.edu/ml/index.php", "[Web Dataset 2]",style='color:red'),
-            a(href="https://data.world/", "[Web Dataset 3]",style='color:red'),
+            a(href="https://www.kaggle.com", "[Kaggle]", style='color:red'),
+            br(),
+            a(href="https://archive.ics.uci.edu/ml/index.php", "[UCI Archive]",style='color:red'),
+            br(),
+            a(href="https://data.world/", "[Data World]",style='color:red'),
             
-            br(),
-            br(),
-            br(),
+            hr(),
             
+            helpText( "Dipersembahkan oleh :", a("Universitas Islam Indonesia", href = "https://www.uii.ac.id/")),
+            br(),
+            tags$img(id = 'shiny34',src = 'uii.png', height="140", width="100"),
+            br(),
+            br(),
             helpText("Didukung oleh :", a("Shiny", href = "http://shiny.rstudio.com")),
             br(),
             tags$img(id = 'shiny2',src = 'shiny.png', height=140, width=126),
@@ -232,7 +233,15 @@ ui <- fluidPage(
         ), #Akhir Tab Panel Masukkan Data
        
        
-        tabPanel("Naive Bayes", style="font-family:Coolvetica", 
+        tabPanel("Naive Bayes",
+                 h6("Naive Bayes", id = 'shiny33',
+                    style= "font-size:100px; 
+                   text-align:center; 
+                   font-family: Coolvetica; 
+                   text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+                   color:white;"),
+                 hr(),
+                 style="font-family:Coolvetica", 
          dashboardPage( skin = "yellow",
            dashboardHeader(title = title, titleWidth = 500,
                            
@@ -285,23 +294,62 @@ ui <- fluidPage(
                tabBox(
                  id = "tabset1",
                 
-                 height = "1600",
+                 height = "1900",
                  width = 12,
                  tabPanel("Data",
-                          div(class="box2",withSpinner(DTOutput("Data"))),
-                          div(downloadButton('downloadDataBaru2',label="Data Filter"))),
+                          div(class="box2",withSpinner(DTOutput("Data"), 
+                                                       type = getOption("spinner.type", default = 1),
+                                                       color = getOption("spinner.color", default = "red")),
+                                                      
+                              ),
+                          box(
+                            title = "Download Data Filter",
+                            status = "warning",
+                            solidHeader = T,
+                            div(downloadButton('downloadDataBaru2',label="Data Filter",style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);")),width=12,
+                            div(helpText("Download dalam format .csv")),
+                            style="text-align:center;",
+                            
+                          ),
+                  ),
                  
                  
                  tabPanel(
                    "Dataset Information",
                    box(
                      width = 12,
+                     title = "Structure Dataset",
+                     status = "warning",
+                     solidHeader = T,
+                     collapsible = T,
+                     div(class="box1",withSpinner(
+                              verbatimTextOutput("structure"), 
+                              type = getOption("spinner.type", default = 1),
+                              color = getOption("spinner.color", default = "red")
+                              )
+                         ),
+                     div(helpText('size dalam satuan byte'), style="text-align:center;"),
+                     div(actionButton('cetak_gambar11','Download', icon = icon('download'),style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);"), style="float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
+                     
+                     
+                   ),
+                   box(
+                     width = 12,
                      title = "Overall Data Summary",
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     div(class="box1",withSpinner(verbatimTextOutput("summary_dataset"))),
-                     actionButton('cetak_gambar1','Download', icon = icon('download'), style="float:right" ),
+                     div(class="box1",withSpinner(verbatimTextOutput("summary_dataset"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  
+                                                  )),
+                     actionButton('cetak_gambar1','Download', icon = icon('download'),style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
               
                    box(
@@ -309,9 +357,14 @@ ui <- fluidPage(
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     div(class="box1",withSpinner(verbatimTextOutput("summary"))),
+                     div(class="box1",withSpinner(verbatimTextOutput("summary"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  )),
                      width = 12,
-                     actionButton('cetak_gambar10','Download', icon = icon('download'), style="float:right" ),
+                     actionButton('cetak_gambar10','Download', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
                    
                    box(
@@ -319,10 +372,17 @@ ui <- fluidPage(
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     div(class="box1",withSpinner(verbatimTextOutput("profil_dataset"))),
+                     div(class="box1",withSpinner(verbatimTextOutput("profil_dataset"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  )),
                      width = 12,
-                     actionButton('cetak_gambar2','Download', icon = icon('download'), style="float:right" ),
+                     actionButton('cetak_gambar2','Download', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
+                   
+                   
                    
                  ),#Akhir Tab panel Dataset Information
                  
@@ -331,21 +391,31 @@ ui <- fluidPage(
                    "Model",
                    box(
                      div(class ="box1",
-                         withSpinner(verbatimTextOutput("Model"))),
+                         withSpinner(verbatimTextOutput("Model"),
+                                     type = getOption("spinner.type", default = 1),
+                                     color = getOption("spinner.color", default = "red")
+                                     )),
                      width = 12,
                      title = "Model",
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     actionButton('cetak_gambar3','Download', icon = icon('download'), style="float:right" ),
+                     actionButton('cetak_gambar3','Download', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
                    box(
                      title = "Summary",width = 12,
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     div(class="box1",withSpinner(verbatimTextOutput("Model_summary"))),
-                     actionButton('cetak_gambar4','Download', icon = icon('download'), style="float:right" )
+                     div(class="box1",withSpinner(verbatimTextOutput("Model_summary"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  )),
+                     actionButton('cetak_gambar4','Download', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    )
                    
                  ),#Akhir tab Panel Model
@@ -354,32 +424,55 @@ ui <- fluidPage(
                  tabPanel(
                    "Model Assessment",
                    box(
-                     div(class="box1",withSpinner(verbatimTextOutput("crossT"))),
+                     div(class="box1",withSpinner(verbatimTextOutput("crossT"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  )),
                      width = 12, 
                      title = "Confusion Matrix (Cross Tabulasi)",
                      status = "warning",
                      solidHeader = T,
                      collapsible = T,
-                     actionButton('cetak_gambar5','Download', icon = icon('download'), style="float:right" ),
+                     actionButton('cetak_gambar5','Download', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right" ),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
-                   div(class="box3",paste("Beberapa informasi dapat tidak tersedia karena keterbasatan library")),
+                   # div(class="box3",paste("Beberapa informasi dapat tidak tersedia karena keterbasatan library")),
                    box(
                      width = 12,
                      status = "warning",
                      solidHeader = T,
-                     div(class="box1",paste("Overall Statistics"), withSpinner(verbatimTextOutput("Test")),
-                         paste("Class Statistics"), withSpinner(tableOutput("Test2"))),
-                     actionButton('cetak_gambar7','Download(class)', icon = icon('download'), style="float:right"),
-                     actionButton('cetak_gambar6','Download(overall)', icon = icon('download'), style="float:right")
+                     div(class="box1",paste("Overall Statistics"), withSpinner(verbatimTextOutput("Test"),
+                                                                               type = getOption("spinner.type", default = 1),
+                                                                               color = getOption("spinner.color", default = "red")
+                                                                               ),
+                         paste("Class Statistics"), withSpinner(tableOutput("Test2"),
+                                                                type = getOption("spinner.type", default = 1),
+                                                                color = getOption("spinner.color", default = "red")
+                                                                )),
+                     actionButton('cetak_gambar7','Download(class)', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right"),
+                     actionButton('cetak_gambar6','Download(overall)', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right"),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    ),
                    box(
                      width = 12,
                      status = "warning",
                      solidHeader = T,
-                     div(class="box1",paste("Table"),withSpinner(verbatimTextOutput("Test3")),
-                         paste("Comparison"),withSpinner(verbatimTextOutput("Test4"))),
-                     actionButton('cetak_gambar8','Download(table)', icon = icon('download'), style="float:right"),
-                     actionButton('cetak_gambar9','Download(comp)', icon = icon('download'), style="float:right"),
+                     div(class="box1",paste("Table"),withSpinner(verbatimTextOutput("Test3"),
+                                                                 type = getOption("spinner.type", default = 1),
+                                                                 color = getOption("spinner.color", default = "red")
+                                                                 ),
+                         paste("Comparison"),withSpinner(verbatimTextOutput("Test4"),
+                                                         type = getOption("spinner.type", default = 1),
+                                                         color = getOption("spinner.color", default = "red")
+                                                         )),
+                     actionButton('cetak_gambar8','Download(table)', icon = icon('download'), style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right"),
+                     actionButton('cetak_gambar9','Download(comp)', icon = icon('download'),style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);float:right"),
+                     div(helpText("Download dalam format .png :"), style="float:right")
                    )
                    
                  ),#Akhir Tab Panel Model Assessment
@@ -390,7 +483,7 @@ ui <- fluidPage(
                    box(
                      status = "warning",
                      solidHeader = T,
-                     div(class="box1",fileInput("take_test", "Choose .txt/.csv/ File",
+                     div(class="box1",fileInput("take_test", "Pilih File .txt/ .csv/",
                                   accept = c(
                                     "text/csv",
                                     "text/comma-separated-values,text/plain",
@@ -406,19 +499,27 @@ ui <- fluidPage(
                                             ),
                                 selected = ",", inline = TRUE
                    )),width = 6, title = "Pemisah data"),
-                   box(div(class="box1",withSpinner(DT::DTOutput("show_myTest"))),width=12),
+                   box(div(class="box1",withSpinner(DT::DTOutput("show_myTest"),
+                                                    type = getOption("spinner.type", default = 1),
+                                                    color = getOption("spinner.color", default = "red")
+                                                    )),width=12),
                    box(
                      title = "Hasil Prediksi", width = 12,
                      status = "warning",
                      solidHeader = T,
-                     div(class="box1",withSpinner(verbatimTextOutput("predict_myTest")))
+                     div(class="box1",withSpinner(verbatimTextOutput("predict_myTest"),
+                                                  type = getOption("spinner.type", default = 1),
+                                                  color = getOption("spinner.color", default = "red")
+                                                  ))
                    ),
                    
                    box(
-                     title = "Download Data Baru CSV",
+                     title = "Download Data Hasil Prediksi (CSV)",
                      status = "warning",
                      solidHeader = T,
-                     div(downloadButton('downloadDataBaru',label="Predictions Results")),width=12,
+                     div(downloadButton('downloadDataBaru',label="Hasil Prediksi",style="background-color:white; border: 2px solid yellow; font-size:15px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);")),width=12,
+                     div(helpText("Download dalam format .csv")),
                      style="text-align:center;",
                    ),
                    
@@ -429,8 +530,9 @@ ui <- fluidPage(
                    
                    box(
                      div(
-                       radioButtons('report123', 'Download Report Aplikasi ADAMI:', c('HTML', 'Word'), inline = TRUE),
-                       downloadButton('download123',label="Report Data ADAMI")),width=12,
+                       radioButtons('report123', 'Download Report Aplikasi ADAMI:', c('HTML'), inline = TRUE),
+                       downloadButton('download123',label="Report Data ADAMI",style="background-color:white; border: 2px solid yellow; font-size:17px; padding: 14px 40px, border-radius: 12px; 
+                                     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);")),width=12,
                      style ="text-align:center; font-size: 24px; background-color:lightGrey; box-shadow: 0px"
                    ),
                  ) #Akhir dar tab Panel Report
@@ -446,125 +548,115 @@ ui <- fluidPage(
          
        ), # Akhir Tab Panel Naive Bayesmodelling 
        
-       
-       
-                  # tabPanel("Decision Tree",
-                  #     dashboardPage(
-                  #                     dashboardHeader(title = title2, titleWidth = 500,
-                  # 
-                  #                                     dropdownMenu(type = "message",
-                  #                                                  messageItem(from = "Developer",message = "Coming Soon!")
-                  #                                     ),
-                  # 
-                  #                                     dropdownMenuOutput("msgOutput")),
-                  #                     dashboardSidebar(
-                  # 
-                  # 
-                  # 
-                  #                     ),
-                  #                     dashboardBody(
-                  # 
-                  #                       fluidRow(
-                  #                         valueBox("Coming Soon","Decsion Tree", icon=icon("car-side"))
-                  #                       ),
-                  # 
-                  # 
-                  #                     ) #dashboardbody
-                  #                  )
-                  #   )
-                  #          ,
-                  # tabPanel("Support Vector Machine",
-                  #          dashboardPage(
-                  #                         dashboardHeader(title = title3, titleWidth = 500,
-                  # 
-                  #                                         dropdownMenu(type = "message",
-                  #                                                      messageItem(from = "Developer",message = "Coming Soon!")
-                  #                                         ),
-                  # 
-                  #                                         dropdownMenuOutput("msgOutput")),
-                  #                         dashboardSidebar(
-                  # 
-                  # 
-                  # 
-                  #                         ),
-                  #                         dashboardBody(
-                  #                           fluidRow(
-                  #                             valueBox("Coming Soon","Support Vector Machine", icon=icon("car-side", color = "yellow"))
-                  #                           ),
-                  # 
-                  #                         ) #dashboardbody
-                  #          )
-                  # 
-                  #          ),
-                  # tabPanel("K-Nearast Neighbors",
-                  #          dashboardPage(
-                  #                         dashboardHeader(title = title4, titleWidth = 500,
-                  # 
-                  #                                         dropdownMenu(type = "message",
-                  #                                                      messageItem(from = "Developer",message = "Coming Soon!")
-                  #                                         ),
-                  # 
-                  #                                         dropdownMenuOutput("msgOutput")),
-                  #                         dashboardSidebar(
-                  # 
-                  # 
-                  # 
-                  #                         ),
-                  #                         dashboardBody(
-                  #                           fluidRow(
-                  #                             valueBox("Coming Soon","K-Nearast Neighbors", icon=icon("car-side", color = "yellow"))
-                  #                           ),
-                  # 
-                  #                         ) #dashboardbody
-                  #          )
-                  # 
-                  #          ),
-                  # tabPanel("Random Forest",
-                  #          dashboardPage(
-                  #                         dashboardHeader(title = title5, titleWidth = 500,
-                  # 
-                  #                                         dropdownMenu(type = "message",
-                  #                                                      messageItem(from = "Developer",message = "Coming Soon!")
-                  #                                         ),
-                  # 
-                  #                                         dropdownMenuOutput("msgOutput")),
-                  #                         dashboardSidebar(
-                  # 
-                  # 
-                  # 
-                  #                         ),
-                  #                         dashboardBody(
-                  #                           fluidRow(
-                  #                             valueBox("Coming Soon","Random Forest", icon=icon("car-side", color = "yellow"))
-                  #                           ),
-                  # 
-                  #                         ) #dashboardbody
-                  #          )
-                  # 
-                  #          ),
-                  # tabPanel("Logistic Regression",
-                  #          dashboardPage(
-                  #                         dashboardHeader(title = title6, titleWidth = 500,
-                  # 
-                  #                                         dropdownMenu(type = "message",
-                  #                                                      messageItem(from = "Developer",message = "Coming Soon!")
-                  #                                         ),
-                  # 
-                  #                                         dropdownMenuOutput("msgOutput")),
-                  #                         dashboardSidebar(
-                  # 
-                  # 
-                  # 
-                  #                         ),
-                  #                         dashboardBody(
-                  #                           fluidRow(
-                  #                             valueBox("Coming Soon","Logistic Regression", icon=icon("car-side", color = "yellow"))
-                  #                           ),
-                  # 
-                  #                         ) #dashboardbody
-                  #          )
-                  # 
-                  #          ),
+       tabPanel('PCA',
+                h6("PCA", id = 'shiny21',
+                   style= "font-size:100px; 
+                   text-align:center; 
+                   font-family: Coolvetica; 
+                   text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+                   color:white;"),
+                hr(),
+                h1("Coming Soon", id = 'shiny22',
+                   style= "font-size:300px; 
+                   text-align:center; 
+                   font-family: Coolvetica; 
+                   text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+                   color:white;"),
+                br(),
+                br(),
+                hr(),
+                
+                ),
+       # tabPanel('Random Forest',
+       #          h6("Random Forest", id = 'shiny23',
+       #             style= "font-size:100px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          hr(),
+       #          h1("Coming Soon", id = 'shiny24',
+       #             style= "font-size:300px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09; 
+       #             color:white;"),
+       #          br(),
+       #          br(),
+       #          hr(),
+       # ),
+       # tabPanel('Support Vector Machine',
+       #          h6("Support Vector Machine", id = 'shiny25',
+       #             style= "font-size:100px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          hr(),
+       #          h1("Coming Soon", id = 'shiny26',
+       #             style= "font-size:300px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          br(),
+       #          br(),
+       #          hr(),
+       # ),
+       # tabPanel('Decision Tree',
+       #          h6("Decision Tree", id = 'shiny27',
+       #             style= "font-size:100px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          hr(),
+       #          h1("Coming Soon", id = 'shiny28',
+       #             style= "font-size:300px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          br(),
+       #          br(),
+       #          hr(),
+       # ),
+       # tabPanel('K-nearest Neighboor',
+       #          h6("K-nearest Neighboor", id = 'shiny29',
+       #             style= "font-size:100px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          hr(),
+       #          h1("Coming Soon", id = 'shiny30',
+       #             style= "font-size:300px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          br(),
+       #          br(),
+       #          hr(),
+       # ),
+       # tabPanel('Logistic Regression',
+       #          h6("Logistic Regression", id = 'shiny31',
+       #             style= "font-size:100px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          hr(),
+       #          h1("Coming Soon", id = 'shiny32',
+       #             style= "font-size:300px; 
+       #             text-align:center; 
+       #             font-family: Coolvetica; 
+       #             text-shadow: 0 0 0.2em #F7EC09, 0 0 0.2em #F7EC09;
+       #             color:white;"),
+       #          br(),
+       #          br(),
+       #          hr(),
+       # ),
        
      ),#Akhir dari Navbar PAge #navigator
 

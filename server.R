@@ -9,6 +9,10 @@ library(dplyr)
 library(gmodels)
 library(broom)
 library(kableExtra)
+library(e1071)
+library(rmarkdown)
+
+
 
 shinyServer(function(input, output, session) {
   
@@ -21,20 +25,6 @@ shinyServer(function(input, output, session) {
     p <- read.csv(take_file$datapath, sep = input$pemisah_variabel)
     return(p)
   }) 
-  # myData <- reactive({
-  #   take_file <- input$take_file
-  #   if (is.null(take_file))
-  #   return(NULL)
-  #   if (substr_right(paste0(take_file$datapath),4) == "xlsx")
-  #   {
-  #     p <- read_xlsx(take_file$datapath)
-  #   } else {
-  #     p <- read.csv(take_file$datapath, sep = input$xlsxriabel)
-  #   }
-  #  
-  #   return(p)
-  #   
-  #   }) 
   
   output$show_data <- DT::renderDT({
     import_data <- myData()
@@ -42,27 +32,8 @@ shinyServer(function(input, output, session) {
     })
   
   output$txtOutput <- renderText({
-    paste("Halo",input$txtInput,"!")})
+    paste("Hai",input$txtInput,"!")})
   
-  observe(addScrollAnim(session, 'shiny1', 'pulse')) 
-  observe(addScrollAnim(session, 'shiny2', 'pulse')) 
-  observe(addScrollAnim(session, 'shiny3', 'bounceInRight'))
-  observe(addScrollAnim(session, 'shiny4', 'bounceInLeft')) 
-  observe(addScrollAnim(session, 'shiny5', 'bounceInRight')) 
-  observe(addScrollAnim(session, 'shiny6', 'bounceInRight'))
-  observe(addScrollAnim(session, 'shiny7', 'bounceInRight'))
-  observe(addScrollAnim(session, 'shiny8', 'bounceInRight')) 
-  observe(addScrollAnim(session, 'shiny9', 'bounceInLeft')) 
-  observe(addScrollAnim(session, 'shiny10', 'pulse'))
-  observe(addScrollAnim(session, 'shiny11', 'bounceInLeft')) 
-  observe(addScrollAnim(session, 'shiny12', 'bounceInRight')) 
-  observe(addScrollAnim(session, 'shiny13', 'bounceInRight')) 
-  observe(addScrollAnim(session, 'shiny14', 'bounceInRight')) 
-  observe(addScrollAnim(session, 'shiny15', 'pulse')) 
-  observe(addScrollAnim(session, 'shiny16', 'pulse'))
-  observe(addScrollAnim(session, 'shiny17', 'pulse'))
-  observe(addScrollAnim(session, 'shiny18', 'pulse'))
-  observe(addScrollAnim(session, 'shiny19', 'pulse'))
   
   # Import New Data for Testing
   myTest <- reactive({
@@ -79,10 +50,6 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # Naive Bayes Model
-  library(e1071)
-  
-  
   # Menentukan Percentage Split
   splitSlider <- reactive({
     input$Slider1 / 100
@@ -95,16 +62,16 @@ shinyServer(function(input, output, session) {
   InputDataset_model <- myData
   
   output$SelectX <-  renderUI({
-    box(selectizeInput("SelectX", 
+    box(selectizeInput("SelectX",
                        label = "Predictor:",
-                       choices = names(InputDataset_model()), 
-                       selected = 1, 
+                       choices = names(InputDataset_model()),
+                       selected = 1,
                        multiple = TRUE),
         solidHeader = TRUE, width = "12", title = "Predictor (X)")
   })
-  
-  
-  
+
+
+
   observe({
     lstname <- names(InputDataset())
     updateSelectInput(session = session,
@@ -113,23 +80,38 @@ shinyServer(function(input, output, session) {
                       selected = if(input$all) names(InputDataset_model())
                       )
   })
-  
+
   output$SelectY <-  renderUI({
     box(selectizeInput("SelectY",
                        label = "Pilih variabel yang akan diprediksi:",
-                       choices = names(InputDataset_model()), 
-                       selected = 1, 
+                       choices = names(InputDataset_model()),
+                       selected = 1,
                        multiple = FALSE),
         solidHeader = TRUE, width = "12", title = "Target (Y)")
   })
-  
+
   observe({
     lstname <- names(InputDataset())
     updateSelectInput(session = session,
                       inputId = "SelectY",
-                      choices = lstname)
+                      choices = lstname,)
   })
   
+  output$Data <- DT::renderDT({
+    
+    
+    tampil <- myData()
+    
+    data_terpilih = tampil[c(input$SelectX)]
+    
+    print(data_terpilih)
+    
+  })
+  
+  dataBaru <- reactive({
+    nama <- InputDataset_model()
+    nama[input$SelectX]
+  })
    
    # We choose high number for random sampling, assuming the total data is hundred thousands to provide good accuracy
    set.seed(1e+7)
@@ -155,135 +137,6 @@ shinyServer(function(input, output, session) {
       renderText(paste("Test Data:", 
                         tryCatch(NROW(testData()), 
                                  error=function(e) "harap import data!") ))
-   
-   # output$Data <- renderDT(InputDataset())
-   
-   output$Data <- DT::renderDT({
-     
-     
-     tampil <- myData()
-     
-     data_terpilih = tampil[c(input$SelectX)]
-     
-     print(data_terpilih)
-     
-   })
-   
-   
-   # Screenshot
-   observeEvent(input$cetak_gambar1,
-                screenshot(
-                  selector = "#summary_dataset",
-                  filename = "summary_dataset",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-             )
-   observeEvent(input$cetak_gambar2,
-                screenshot(
-                  selector = "#profil_dataset",
-                  filename = "profile_dataset",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-            )
-   observeEvent(input$cetak_gambar3,
-                screenshot(
-                  selector = "#Model",
-                  filename = "model",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-            )
-   observeEvent(input$cetak_gambar4,
-                screenshot(
-                  selector = "#Model_summary",
-                  filename = "summary",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-            )
-   observeEvent(input$cetak_gambar5,
-                screenshot(
-                  selector = "#crossT",
-                  filename = "Confussion_Matrix",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-              )
-              )
-   observeEvent(input$cetak_gambar6,
-                screenshot(
-                  selector = "#Test",
-                  filename = "overall",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-            )
-   observeEvent(input$cetak_gambar7,
-                screenshot(
-                  selector = "#Test2",
-                  filename = "class",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-            )
-   observeEvent(input$cetak_gambar8,
-                screenshot(
-                  selector = "#Test3",
-                  filename = "Table",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-   )
-   
-   observeEvent(input$cetak_gambar9,
-                screenshot(
-                  selector = "#Test4",
-                  filename = "Comparison",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-   )
-   
-   observeEvent(input$cetak_gambar10,
-                screenshot(
-                  selector = "#summary",
-                  filename = "Attribute Summary",
-                  id = "",
-                  # scale = 1,
-                  timer = 0,
-                  download = TRUE,
-                  
-                )
-   )
-   
    
    
    # Variable Formulation
@@ -413,6 +266,10 @@ shinyServer(function(input, output, session) {
      summary(dataset)
    })
    
+   output$structure <- renderPrint({
+     str(input$take_file)
+   })
+   
    #Predict MyTest
    MyTestData <- reactive({
      actmytest <- myTest()
@@ -423,33 +280,19 @@ shinyServer(function(input, output, session) {
               error=function(e) "Harap import data yang akan diprediksi!")
    )
    
-   # output$report = downloadHandler(
-   #   filename = 'report.txt',
-   #   
-   #   content = function(file) {
-   #     V1 <- "REPORT \n\n----------------\n Predictor:"
-   #     V2 <- input$SelectX
-   #     V3 <- "\n\n----------------\n Prediction:"
-   #     V4 <- input$SelectY
-   #     V5 <- "\n\n----------------\n Data Summary: \n"
-   #     V6 <- summary(InputDataset())
-   #     V7 <- "\n\n----------------\n Model: \n"
-   #     V8 <- summary(NB_Model())
-   #     # V9 <- "\n\n----------------\n Profile Dataset: \n"
-   #     # V10 <- profil_dataset
-   #     textfile=file.path("tuning_parameter.txt");
-   #     printer = file(textfile,"a+");
-   #     write(c(V1,V2,V3,V4,V5,V6,V7,V8,V9,V10), textfile,sep = " ",append = TRUE, ncolumns = 6);
-   #     write("\n", textfile, append=TRUE)
-   #     close(printer)
-   #     out = textfile
-   #     
-   #     file.rename(out, file) # move pdf to file for downloading
-   #   },
-   #   
-   #   contentType = 'application/txt'
-   # )
-   
+   output$hist_dataset <- renderPlot(
+     {
+       hist_dataset <- myData()
+
+       vis_miss(hist_dataset)
+       vis_dat(hist_dataset)
+
+       par(mfrow=c(3,4))
+       for(i in 1:ncol(hist_dataset)) {
+         hist(hist_dataset[, i], main = paste(colnames(hist_dataset[i])), xlab = "")
+       }
+     })
+
    myResult <- reactive({
      dataAkhir <- myTest()
      dataAkhir[input$SelectY] <- predict(NB_Model(), MyTestData())
@@ -475,15 +318,18 @@ shinyServer(function(input, output, session) {
          paste("Data Filter.csv", sep = "")
        },
        content = function(file) {
-         write.csv(input$SelectX, file)
+         write.csv(dataBaru(), file)
        }
      )
    
    
    output$download123 <- downloadHandler(
      filename = function() {
-       paste0('report_', Sys.Date(), '.', switch(
-         input$report123, PDF = 'pdf', HTML = 'html', Word = 'docx'
+       paste0('reportAdami_', Sys.Date(), '.', switch(
+         input$report123, 
+         PDF = 'pdf',
+         HTML = 'html', 
+         Word = 'docx'
        ))
      },
      
@@ -496,11 +342,10 @@ shinyServer(function(input, output, session) {
        on.exit(setwd(owd))
        file.copy(src, 'markdown.Rmd')
        
-       library(rmarkdown)
        out <- render(input = 'markdown.Rmd',
                      output_format = switch(
                        input$report123, 
-                       PDF = pdf_document(), 
+                       PDF = pdf_document(),
                        HTML = html_document(),
                        Word = word_document()
                      )
@@ -509,7 +354,166 @@ shinyServer(function(input, output, session) {
      }
    )
    
+   # Screenshot
+   observeEvent(input$cetak_gambar1,
+                screenshot(
+                  selector = "#summary_dataset",
+                  filename = "summary_dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar2,
+                screenshot(
+                  selector = "#profil_dataset",
+                  filename = "profile_dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar3,
+                screenshot(
+                  selector = "#Model",
+                  filename = "model",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar4,
+                screenshot(
+                  selector = "#Model_summary",
+                  filename = "summary",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar5,
+                screenshot(
+                  selector = "#crossT",
+                  filename = "Confussion_Matrix",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar6,
+                screenshot(
+                  selector = "#Test",
+                  filename = "overall",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar7,
+                screenshot(
+                  selector = "#Test2",
+                  filename = "class",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   observeEvent(input$cetak_gambar8,
+                screenshot(
+                  selector = "#Test3",
+                  filename = "Table",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
    
+   observeEvent(input$cetak_gambar9,
+                screenshot(
+                  selector = "#Test4",
+                  filename = "Comparison",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   
+   observeEvent(input$cetak_gambar10,
+                screenshot(
+                  selector = "#summary",
+                  filename = "Attribute Summary",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   
+   observeEvent(input$cetak_gambar11,
+                screenshot(
+                  selector = "#structure",
+                  filename = "Structure Dataset",
+                  id = "",
+                  # scale = 1,
+                  timer = 0,
+                  download = TRUE,
+                  
+                )
+   )
+   
+   observe(addScrollAnim(session, 'shiny1', 'pulse')) 
+   observe(addScrollAnim(session, 'shiny2', 'pulse')) 
+   observe(addScrollAnim(session, 'shiny3', 'bounceInRight'))
+   observe(addScrollAnim(session, 'shiny4', 'bounceInLeft')) 
+   observe(addScrollAnim(session, 'shiny5', 'bounceInRight')) 
+   observe(addScrollAnim(session, 'shiny6', 'bounceInRight'))
+   observe(addScrollAnim(session, 'shiny7', 'bounceInRight'))
+   observe(addScrollAnim(session, 'shiny8', 'bounceInRight')) 
+   observe(addScrollAnim(session, 'shiny9', 'bounceInLeft')) 
+   observe(addScrollAnim(session, 'shiny10', 'pulse'))
+   observe(addScrollAnim(session, 'shiny11', 'bounceInLeft')) 
+   observe(addScrollAnim(session, 'shiny12', 'bounceInRight')) 
+   observe(addScrollAnim(session, 'shiny13', 'bounceInRight')) 
+   observe(addScrollAnim(session, 'shiny14', 'bounceInRight')) 
+   observe(addScrollAnim(session, 'shiny15', 'pulse')) 
+   observe(addScrollAnim(session, 'shiny16', 'pulse'))
+   observe(addScrollAnim(session, 'shiny17', 'pulse'))
+   observe(addScrollAnim(session, 'shiny18', 'pulse'))
+   observe(addScrollAnim(session, 'shiny19', 'pulse'))
+   observe(addScrollAnim(session, 'shiny20', 'pulse'))
+   observe(addScrollAnim(session, 'shiny21', 'pulse')) 
+   observe(addScrollAnim(session, 'shiny22', 'pulse'))
+   observe(addScrollAnim(session, 'shiny23', 'pulse'))
+   observe(addScrollAnim(session, 'shiny24', 'pulse'))
+   observe(addScrollAnim(session, 'shiny25', 'pulse'))
+   observe(addScrollAnim(session, 'shiny26', 'pulse'))
+   observe(addScrollAnim(session, 'shiny27', 'pulse')) 
+   observe(addScrollAnim(session, 'shiny28', 'pulse'))
+   observe(addScrollAnim(session, 'shiny29', 'pulse'))
+   observe(addScrollAnim(session, 'shiny30', 'pulse'))
+   observe(addScrollAnim(session, 'shiny31', 'pulse'))
+   observe(addScrollAnim(session, 'shiny32', 'pulse'))
+   observe(addScrollAnim(session, 'shiny33', 'pulse'))
+   observe(addScrollAnim(session, 'shiny34', 'pulse'))
    
 
 } 
