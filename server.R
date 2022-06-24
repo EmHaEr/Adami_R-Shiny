@@ -1,5 +1,8 @@
 server <- function(input, output, session)
 {
+  #############################
+  ############ DATA ###########
+  #############################
     data <- reactive(
     {
       upload_data <- input$upload_data
@@ -35,12 +38,13 @@ server <- function(input, output, session)
   dataBaru <- reactive(
    {
      nama <- InputDataset()
+     
      nama[input$variabel]
    })
 
   
   #############################
-  ########## VARIABLE ########
+  ########## VARIABEL #########
   #############################
   output$variable_selectizeinput <- renderUI(
      {
@@ -243,7 +247,7 @@ server <- function(input, output, session)
       modelPCA <- prcomp(screeplot_PCA, scale. = TRUE, center = TRUE)
       modelPCA$rotation
       
-      fviz_eig(modelPCA)
+      fviz_eig(modelPCA, addlabels = TRUE, ylim = c(0, 100))
     })
   
   output$cos2plot_PCA <- renderPlot(
@@ -400,8 +404,8 @@ server <- function(input, output, session)
   
   observeEvent(input$cetak_gambar8,
                screenshot(
-                  selector = "#Visualisasi",
-                  filename = "Visualisasi PCA",
+                  selector = "#hasil_summaryPCA",
+                  filename = "Summary PCA",
                   id = "",
                   # scale = 1,
                   timer = 0,
