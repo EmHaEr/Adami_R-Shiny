@@ -12,6 +12,7 @@ server <- function(input, output, session)
       
       data = read.csv(upload_data$datapath, sep = input$pemisah_variabel,
                       row.names = 1)
+      
       return(data)
     })
   
@@ -22,8 +23,8 @@ server <- function(input, output, session)
        DT::datatable(import_data)
     })
   
-  InputDataset<- data
- 
+  InputDataset <- data
+  
   output$variabel <-  renderUI(
     {
       box(selectizeInput("variabel",

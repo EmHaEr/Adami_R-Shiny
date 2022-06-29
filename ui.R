@@ -4,6 +4,7 @@ library(shinyAce)
 library(shinyWidgets)
 library(shinydashboard)
 library(shinycssloaders)
+library(shinyscreenshot)
 library(shinythemes)
 library(caTools)
 library(maps)
@@ -13,6 +14,7 @@ library(DT)
 library(stargazer)
 library(bslib)
 library(rsconnect)
+library(readr)
 #Library Dataset
 library(dplyr)
 library(skimr)
@@ -119,7 +121,7 @@ ui <- fluidPage(
                              div(actionButton('cetak_gambar3','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                     ),
                     #Tab Panel PCA
-                    tabPanel("PCA",
+                    tabPanel("Komputasi",
                              h3("Eigenvalue", style=
                                   "text-align:center"),
                              div(withSpinner(verbatimTextOutput("eigenvalue_PCA"))),
@@ -173,7 +175,7 @@ ui <- fluidPage(
                              div(style = "text-align:center", downloadButton("download_predict", "Download Data"))
                     ),
                     #Tab Panel Visualisasi PCA
-                    tabPanel("Visualisasi", id = "Visualisasi",
+                    tabPanel("Visualisasi",
                              h3("Scree Plot", style=
                                   "text-align:center"),
                              div(withSpinner(plotOutput("screeplot_PCA"))),
@@ -207,8 +209,10 @@ ui <- fluidPage(
                     )
                   ) #navlistPanel
                 ), #fluidPage
+                
         ) #tabname PCA
-      )
+        
+      ) #tabitems
 
     ) #Body
     
