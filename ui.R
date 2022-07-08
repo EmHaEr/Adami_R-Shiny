@@ -41,9 +41,16 @@ ui <- fluidPage(
     
     dashboardSidebar(width = 300,
       sidebarMenu(
+        menuItem("Tutorial", icon = icon("youtube"), href =""),
         menuItem("Dataset", tabName = "Dataset"),
         menuItem("Pre-Processing", tabName = "Variabel"),
-        menuItem("PCA", tabName = "PCA")
+        menuItem("PCA", dropdownButton = TRUE,
+                 menuSubItem("Data PCA", tabName = "Data2"),
+                 menuSubItem("Komputasi PCA", tabName = "Komputasi"),
+                 menuSubItem("Visualisasi PCA", tabName = "Visualisasi")
+        ),
+        menuItem("Data Report", tabName = "DataReport"),
+        menuItem("Source Code", icon = icon("github"), href = "https://github.com/EmHaEr/Adami_R-Shiny")
       ) #Menu
     ), #Sidebar
     
@@ -75,6 +82,8 @@ ui <- fluidPage(
                                  selected = ",", inline = TRUE)
                   ),
                   mainPanel(
+                    h3("Tampilan Dataset", style=
+                         "text-align:center"),
                     div(class = "hbar", withSpinner(DT::DTOutput("data2")))
                   ),
                 ),
@@ -99,118 +108,142 @@ ui <- fluidPage(
                 ),
         ), #tabname Pre-Processing
         
-        tabItem(tabName = "PCA",
-                h2("PCA"),
-                fluidPage(
-                  navlistPanel(
-                    #Tab Panel Dataset
-                    tabPanel("Dataset",
-                             h3("Profil Dataset", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("profil_dataset"))),
-                             div(actionButton('cetak_gambar1','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Summary Dataset", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("summary_dataset"))),
-                             div(actionButton('cetak_gambar2','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Histogram Dataset", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("hist_dataset"))),
-                             div(actionButton('cetak_gambar3','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+        tabItem(tabName = "Data2",
+                fluidRow(
+                  h2("Dataset", style = "text-align:center"),
+                  box(
+                    title = "Profil Dataset", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("profil_dataset"))),
+                    div(actionButton('cetak_gambar1','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Summary Dataset", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("summary_dataset"))),
+                    div(actionButton('cetak_gambar2','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Histogram Dataset", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(plotOutput("hist_dataset"))),
+                    div(actionButton('cetak_gambar3','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  )
+                )
+        ), #tabname Data PCA
+      
+        tabItem(tabName = "Komputasi",
+                fluidRow(
+                  h2("Komputasi", style = "text-align:center"),
+                  box(
+                    title = "Eigenvalue", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("eigenvalue_PCA"))),
+                    h5("Nilai faktor variabel yang dijelaskan oleh masing-masing PC",
+                       style= "text-align:center"),
+                    div(actionButton('cetak_gambar4','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Coordinates PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("coord_PCA"))),
+                    h5("Nilai komponen yang menggambarkan titik asal (koordinat) pada tiap variabel pada PC",
+                       style= "text-align:center"),
+                    div(actionButton('cetak_gambar5','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Squared Cosine PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("cos2_PCA"))),
+                    h5("Nilai komponen terhadap kuadrat jarak observasi (kurva cosinus) ke coordinates pada PC",
+                       style= "text-align:center"),
+                    div(actionButton('cetak_gambar6','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Contribution PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("contrib_PCA"))),
+                    h5("Nilai komponen yang diperoleh dari perbandingan nilai komponen cos2 dengan eigenvalue pada PC",
+                       style= "text-align:center"),
+                    div(actionButton('cetak_gambar7','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                  ),
+                  box(
+                    title = "Summary PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(withSpinner(verbatimTextOutput("hasil_summaryPCA"))),
+                    h5("Rangkuman nilai statistik PCA pada tiap dimensi PC",
+                       style= "text-align:center"),
+                  ),
+                  box(
+                    title = "Model PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(class = "hbar", withSpinner(DT::DTOutput("hasil_modelPCA"))),
+                    h5("Sebaran data yang telah terstandarisasi pada tiap dimensi PC",
+                       style= "text-align:center"),
+                    div(style = "text-align:center", downloadButton("download_model", "Download Data")),
+                  ),
+                  box(
+                    title = "Predict PCA", background = "blue", solidHeader = TRUE,
+                    collapsible = TRUE, width = 12,
+                    div(class = "hbar", withSpinner(DT::DTOutput("hasil_predictPCA"))),
+                    h5("Sebaran data baru yang telah dianalisis dari hasil tiap dimensi PC",
+                       style= "text-align:center"),
+                    div(style = "text-align:center", downloadButton("download_predict", "Download Data")),
+                  ),
+                )
+        ), #tabname Komputasi
+        
+        tabItem(tabName = "Visualisasi",
+                fluidRow(
+                    h2("Visualisasi", style = "text-align:center"),
+                    box(
+                      title = "Scree Plot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 6,
+                      div(withSpinner(plotOutput("screeplot_PCA"))),
+                      h5("Menggambarkan nilai dari eigenvalue tiap variabel ke dalam bentuk dimensi plot PC",
+                         style= "text-align:center"),
+                      div(actionButton('cetak_gambar8','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                     ),
-                    #Tab Panel PCA
-                    tabPanel("Komputasi",
-                             h3("Eigenvalue", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("eigenvalue_PCA"))),
-                             h5("Nilai faktor variabel yang dijelaskan oleh masing-masing
-                        principal component ke tiap dimensi PC",
-                                style= "text-align:center"),
-                             div(actionButton('cetak_gambar4','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Coordinates", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("coord_PCA"))),
-                             h5("Nilai komponen yang menggambarkan titik asal (koordinat) pada tiap variabel 
-                        pada principal component ke tiap dimensi PC",
-                                style= "text-align:center"),
-                             div(actionButton('cetak_gambar5','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Cos2", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("cos2_PCA"))),
-                             h5("Nilai komponen terhadap kuadrat jarak observasi (kurva cosinus) ke coordinates
-                        pada principal component ke tiap dimensi PC",
-                                style= "text-align:center"),
-                             div(actionButton('cetak_gambar6','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Contribution", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("contrib_PCA"))),
-                             h5("Nilai komponen yang diperoleh dari perbandingan nilai komponen cos2 dengan eigenvalue
-                        pada principal component ke tiap dimensi PC",
-                                style= "text-align:center"),
-                             div(actionButton('cetak_gambar7','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                             hr(),
-                             h3("Summary", style=
-                                  "text-align:center"),
-                             div(withSpinner(verbatimTextOutput("hasil_summaryPCA"))),
-                             h5("Rangkuman nilai statistik PCA pada tiap dimensi PC",
-                                style= "text-align:center"),
-                             hr(),
-                             h3("Model", style=
-                                  "text-align:center"),
-                             div(class = "hbar", withSpinner(DT::DTOutput("hasil_modelPCA"))),
-                             h5("tes",
-                                style= "text-align:center"),
-                             div(style = "text-align:center", downloadButton("download_model", "Download Data")),
-                             hr(),
-                             h3("Predict", style=
-                                  "text-align:center"),
-                             div(class = "hbar", withSpinner(DT::DTOutput("hasil_predictPCA"))),
-                             h5("tes",
-                                style= "text-align:center"),
-                             div(style = "text-align:center", downloadButton("download_predict", "Download Data"))
+                    box(
+                      title = "Squared Cosine Plot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 6,
+                      div(withSpinner(plotOutput("cos2plot_PCA"))),
                     ),
-                    #Tab Panel Visualisasi PCA
-                    tabPanel("Visualisasi",
-                             h3("Scree Plot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("screeplot_PCA"))),
-                             h5("Menggambarkan nilai dari eigenvalue tiap variabel ke dalam bentuk dimensi plot PC",
-                                style= "text-align:center"),
-                             hr(),
-                             h3("Cos2 Plot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("cos2plot_PCA"))),
-                             h3("Individuals Plot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("individuals_PCA"))),
-                             h5("Menggambarkan nilai dari cos2 ke tiap instance PC",
-                                style= "text-align:center"),
-                             hr(),
-                             h3("Contrib Plot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("contribplot_PCA"))),
-                             h3("Variables Plot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("variables_PCA"))),
-                             h5("Menggambarkan nilai dari contrib sebagai kontribusi ke tiap variabel PC",
-                                style= "text-align:center"),
-                             hr(),
-                             h3("Biplot", style=
-                                  "text-align:center"),
-                             div(withSpinner(plotOutput("biplot_PCA"))),
-                             h5("Menggambarkan gabungan dari Individuals Plot dan Variables Plot",
-                                style= "text-align:center"),
-                             div(actionButton('cetak_gambar8','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
-                    )
-                  ) #navlistPanel
-                ), #fluidPage
-                
-        ) #tabname PCA
+                    box(
+                      title = "Contrib Plot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 6,
+                      div(withSpinner(plotOutput("contribplot_PCA"))),
+                    ),
+                    box(
+                      title = "Individuals Plot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 12,
+                      div(withSpinner(plotOutput("individuals_PCA"))),
+                      h5("Menggambarkan nilai dari cos2 ke tiap instance PC",
+                         style= "text-align:center"),
+                      div(actionButton('cetak_gambar9','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                    ),
+                    box(
+                      title = "Variables Plot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 6,
+                      div(withSpinner(plotOutput("variables_PCA"))),
+                      h5("Menggambarkan nilai dari contrib sebagai kontribusi ke tiap variabel PC",
+                         style= "text-align:center"),
+                      div(actionButton('cetak_gambar10','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                    ),
+                    box(
+                      title = "Biplot", background = "blue", solidHeader = TRUE,
+                      collapsible = TRUE, width = 12,
+                      div(withSpinner(plotOutput("biplot_PCA"))),
+                      h5("Menggambarkan gabungan dari Individuals Plot dan Variables Plot",
+                         style= "text-align:center"),
+                      div(actionButton('cetak_gambar11','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
+                    ),
+                  )
+        ), #tabname Visualisasi
+        
+        tabItem(tabName = "DataReport",
+                h2("Data Report", style = "text-align:center")
+        ) #tabName Report
         
       ) #tabitems
 

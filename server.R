@@ -241,6 +241,10 @@ server <- function(input, output, session)
       head(var$contrib)
     })
   
+  #############################
+  ######## VISUALISASI ########
+  #############################
+  
   output$screeplot_PCA <- renderPlot(
     {
       screeplot_PCA <- dataBaru()
@@ -405,13 +409,49 @@ server <- function(input, output, session)
   
   observeEvent(input$cetak_gambar8,
                screenshot(
-                  selector = "#hasil_summaryPCA",
-                  filename = "Summary PCA",
+                  selector = "#screeplot_PCA",
+                  filename = "Scree Plot PCA",
                   id = "",
                   # scale = 1,
                   timer = 0,
                   download = TRUE,
                   
+               )
+  )
+  
+  observeEvent(input$cetak_gambar9,
+               screenshot(
+                 selector = "#individuals_PCA",
+                 filename = "Individuals Plot PCA",
+                 id = "",
+                 # scale = 1,
+                 timer = 0,
+                 download = TRUE,
+                 
+               )
+  )
+  
+  observeEvent(input$cetak_gambar10,
+               screenshot(
+                 selector = "#variables_PCA",
+                 filename = "Variables Plot PCA",
+                 id = "",
+                 # scale = 1,
+                 timer = 0,
+                 download = TRUE,
+                 
+               )
+  )
+  
+  observeEvent(input$cetak_gambar11,
+               screenshot(
+                 selector = "#biplot_PCA",
+                 filename = "Biplot PCA",
+                 id = "",
+                 # scale = 1,
+                 timer = 0,
+                 download = TRUE,
+                 
                )
   )
  

@@ -1,0 +1,27 @@
+---
+title: "***Unsupervised Learning*** **menggunakan model PCA**"
+author: "Ilma Khoiruzzidan (18523245), 
+        Muhd Humam Rhamadhani (18523264)"
+output: html_document
+---
+
+---
+
+### Deskripsi
+
+Disini kami akan menghitung dataset yang sudah didapatkan menggunakan algoritma ***Unsupervised Learning*** dengan model **PCA** sebagai perhitungannya. Kami akan menggunakan [dataset trees](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) yang kami ambil dari `package library` dari data R sendiri. Dataset ini menjelaskan pengukuran pertumbuhan dari observasi 31 pohon Cherry Hitam. Pengukuran ini terbagi berdasarkan : `Girth` ($inch$), `Height` ($cm$), dan `Volume` ($cm^3$)  sebagai variabelnya. Pertama, kita lakukan *pre-processing* untuk melihat sebaran dataset-nya.
+
+```{r}
+data <- read.csv("~/Kuliah/Fundamen Sains Data/Premier League.csv", 
+                 row.names=1)
+```
+`head` berfungsi untuk memunculkan 6 *variance* pertama yang didapatkan. Lalu kita bisa mendapatkan juga sebaran histogramnya untuk menjelaskan variabel datanya;
+
+```{r}
+par(mfrow=c(2,2))
+for(i in 1:ncol(data)) {
+  hist(data[, i], main = paste(colnames(data[i])), xlab = "")
+}
+```
+
+---
