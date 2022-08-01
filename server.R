@@ -150,7 +150,7 @@ server <- function(input, output, session)
   output$download_model <- downloadHandler(
      filename = function()
      {
-        paste("Data_Model PCA", "csv", sep = ".")
+        paste("Data Model PCA", "csv", sep = ".")
         
      },
      
@@ -183,7 +183,7 @@ server <- function(input, output, session)
   output$download_predict <- downloadHandler(
      filename = function()
      {
-        paste("Data_Predict PCA", "csv", sep = ".")
+        paste("DataPredict PCA", "csv", sep = ".")
         
      },
      
@@ -320,6 +320,36 @@ server <- function(input, output, session)
     })
   
   #############################
+  ########## REPORT  ##########
+  #############################
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste0("reportPCA_", Sys.Date(), '.', switch(
+        input$reportData,  HTML = 'html', PDF = 'html'
+      ))
+    },
+
+    content = function(file) {
+      src <- normalizePath("markdown.Rmd")
+      
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, "markdown.Rmd")
+      
+      out <- render(input = "markdown.Rmd",
+                    output_format = switch(
+                      input$reportData,
+                      HTML = html_document(),
+                      PDF = pdf_document(),
+                    )
+      )
+      file.rename(out, file)
+      
+    }
+  )
+  
+  #############################
   ######## SCREENSHOT  ########
   #############################
   
@@ -447,6 +477,18 @@ server <- function(input, output, session)
                screenshot(
                  selector = "#biplot_PCA",
                  filename = "Biplot PCA",
+                 id = "",
+                 # scale = 1,
+                 timer = 0,
+                 download = TRUE,
+                 
+               )
+  )
+  
+  observeEvent(input$cetak_gambar12,
+               screenshot(
+                 selector = "#hasil_summaryPCA",
+                 filename = "Summary PCA",
                  id = "",
                  # scale = 1,
                  timer = 0,

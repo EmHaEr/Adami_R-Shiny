@@ -1,27 +1,161 @@
 ---
-title: "***Unsupervised Learning*** **menggunakan model PCA**"
-author: "Ilma Khoiruzzidan (18523245), 
-        Muhd Humam Rhamadhani (18523264)"
+title: "Hasil *data report* menggunakan algoritma PCA"
+author : "PCA"
+date : "`r format(Sys.time(), '%d-%B-%Y')`"
 output: html_document
 ---
 
----
 
-### Deskripsi
-
-Disini kami akan menghitung dataset yang sudah didapatkan menggunakan algoritma ***Unsupervised Learning*** dengan model **PCA** sebagai perhitungannya. Kami akan menggunakan [dataset trees](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) yang kami ambil dari `package library` dari data R sendiri. Dataset ini menjelaskan pengukuran pertumbuhan dari observasi 31 pohon Cherry Hitam. Pengukuran ini terbagi berdasarkan : `Girth` ($inch$), `Height` ($cm$), dan `Volume` ($cm^3$)  sebagai variabelnya. Pertama, kita lakukan *pre-processing* untuk melihat sebaran dataset-nya.
-
-```{r}
-data <- read.csv("~/Kuliah/Fundamen Sains Data/Premier League.csv", 
-                 row.names=1)
-```
-`head` berfungsi untuk memunculkan 6 *variance* pertama yang didapatkan. Lalu kita bisa mendapatkan juga sebaran histogramnya untuk menjelaskan variabel datanya;
-
-```{r}
-par(mfrow=c(2,2))
-for(i in 1:ncol(data)) {
-  hist(data[, i], main = paste(colnames(data[i])), xlab = "")
-}
+```{css echo = FALSE, comment = NA}
+h1 {color: blue;}
 ```
 
----
+# Data
+
+## Profil Dataset
+
+Menjelaskan identitas dari dataset seperti baris dan kolom yang dimiliki oleh dataset serta tipe data yang dimiliki oleh tiap frekuensi tiap nilai dari datanya.
+```{r echo = FALSE, comment = NA}
+      profil_dataset <- dataBaru()
+      
+      glimpse(profil_dataset)
+```
+
+## Summary Data
+
+Berupa rangkuman statistik dari dataset yang di-input oleh pengguna dimana terdapat nilai mean, median, nilai kuartil, dan standar deviasi. Selain itu ditambahkan juga nilai dari profil dataset sebelumnya seperti baris, kolom, tipe data, dan yang terakhir adanya tipe variabel dari dataset yang digunakan.
+```{r echo = FALSE, comment = NA}
+      summary_dataset <- dataBaru()
+      
+      summary(summary_dataset)
+      skim(summary_dataset)
+```
+
+## Histogram Data
+
+Menggambarkan sebuah grafik dengan bentuk diagram batang dari nilai tiap frekuensi dari kolom variabel dataset.
+```{r echo = FALSE, comment = NA}
+      hist_dataset <- dataBaru()
+      
+      par(mfrow=c(2,4))
+      for(i in 1:ncol(hist_dataset)) {
+        hist(hist_dataset[, i], main = paste(colnames(hist_dataset[i])), xlab = "")
+      }
+```
+
+# Komputasi
+
+## Model PCA
+
+Model PCA merupakan sebaran nilai data yang telah distandarisasi dari hasil modeling dataset sebelumnya pada tiap dimensi PC.
+```{r echo = FALSE, comment = NA}
+      hasil_predictPCA <- dataBaru()
+      
+      pcaModel <- prcomp(hasil_predictPCA, scale. = TRUE, center = TRUE)
+      pcaModel$rotation
+```
+
+## Eigenvalue PCA
+
+Eigenvalue adalah nilai-nilai faktor variabel yang dipertahankan dalam bentuk dimensi yang dijelaskan oleh masing-masing principal component dari dataset. Nilai eigenvalue akan menghasilkan suatu varians kumulatif dari *principal component* nantinya
+```{r echo = FALSE, comment = NA}
+      eigenvalue_PCA <- dataBaru()
+      
+      modelPCA <- prcomp(eigenvalue_PCA, scale. = TRUE, center = TRUE)
+      
+      get_eigenvalue(modelPCA)
+```
+
+## Coordinates PCA
+
+Coordinates merupakan nilai acuan yang menjadi nilai acuan sebaran sesuai dengan titik asal dari *principal component*.
+```{r echo = FALSE, comment = NA}
+      coord_PCA <- dataBaru()
+      
+      modelPCA <- prcomp(coord_PCA, scale. = TRUE, center = TRUE)
+      
+      var <- get_pca_var(modelPCA)
+      var
+      
+      head(var$coord)
+```
+
+## Squared Cosine PCA
+
+*Squared cosine* merepresentasikan jarak kuadrat observasi variabel dari kurva kosinus ke dalam *coordinates* pada PC. Dari sinilah asal muasal adanya *squared* pada fungsinya karena menggunakan nilai kuadrat.
+```{r echo = FALSE, comment = NA}
+      cos2_PCA <- dataBaru()
+      
+      modelPCA <- prcomp(cos2_PCA, scale. = TRUE, center = TRUE)
+      
+      var <- get_pca_var(modelPCA)
+      var
+      
+      head(var$cos2)
+```
+
+## Contribution PCA
+
+*Contribution* adalah persentase nilai yang membandingkan dari variabel *squared cosine* dengan nilai *eigenvalue*. Nilai *eigenvalue* dalam perhitungan ini bisa juga mewakilkan nilai seluruh dari *squared cosine*.
+```{r echo = FALSE, comment = NA}
+      contrib_PCA <- dataBaru()
+      
+      modelPCA <- prcomp(contrib_PCA, scale. = TRUE, center = TRUE)
+      
+      var <- get_pca_var(modelPCA)
+      var
+      
+      head(var$contrib)
+```
+
+## Summary PCA
+
+*Summary* pada bagian ini sama seperti pada data mendeskripsikan rangkuman nilai statistik berupa standar deviasi, proporsi tiap varians, dan proporsi kumulatif untuk masing-masing *principal component* (PC).
+```{r echo = FALSE, comment = NA}
+        hasil_summaryPCA <- dataBaru()
+        
+        pcaModel <- prcomp(hasil_summaryPCA, scale. = TRUE, center = TRUE)
+        
+        summary(pcaModel)
+```
+
+Predict Data tidak dapat ditampilkan pada data report karena data tersebut merupakan data table hasil prediksi dari data model
+
+
+# Visualisasi
+
+## Screeplot PCA
+
+Screeplot sebagai gambaran plot dari nilai *eigenvalues*. Hasil kumulatif dari tiap dimensi akan berjumlah 100 % dimana dari awal dimensi akan selalu bersifat menurun yang mana ini merupakan salah satu bentuk dari teknik reduksi data dimana tiap dimensi mewakilkan nilai-nilai yang akan dianalisis.
+```{r echo = FALSE, comment = NA}
+      fviz_eig(modelPCA, addlabels = TRUE, ylim = c(0, 100))
+```
+
+## Individuals Plot PCA
+
+Individuals plot sebagai gambaran plot yang didapatkan dari sebaran nilai *squared cosine* yang digambarkan menjadi dimensi plot ini (individuals plot).
+```{r echo = FALSE, comment = NA}
+      fviz_pca_ind(modelPCA, repel = TRUE,
+                   col.ind = "cos2",
+                   gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+      )
+```
+
+## Variables Plot PCA
+
+Sedangkan pada variables plot akan mewakilkan nilai dari variabel *contribution* yang juga disebarkan menjadi dalam sebuah dimensi plot.
+```{r echo = FALSE, comment = NA}
+      fviz_pca_var(modelPCA, repel = TRUE,
+                   col.var = "contrib",
+                   gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+      )
+```
+
+## Biplot PCA
+
+Lalu yang terakhir merupakan gabungan dari individuals dan variables plot yang menjadi representatif mutlak terhadap visualisasi perhitungan algoritma PCA. Pada ujung sumbu akan ditunjukkan berapa persen perwakilan dari nilai dimensi. Lalu, arah panah pada plot (individuals plot) akan menunjukkan kualitas dari variabel (variables plot) tiap data. Semakin jauh dari arah panah maka berarti sebaran data dari PC itu sedikit mewakilkan dari hasil komputasi analisisnya
+```{r echo = FALSE, comment = NA}
+      fviz_pca_biplot(modelPCA, repel = TRUE,
+                      col.var = "blue",
+                      col.ind = "#000000")
+```

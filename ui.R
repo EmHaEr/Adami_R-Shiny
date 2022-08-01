@@ -6,20 +6,17 @@ library(shinydashboard)
 library(shinycssloaders)
 library(shinyscreenshot)
 library(shinythemes)
-library(caTools)
-library(maps)
-library(leaflet)
-library(rio)
-library(DT)
-library(stargazer)
-library(bslib)
 library(rsconnect)
-library(readr)
 #Library Dataset
+library(kableExtra)
+library(readr)
+library(DT)
 library(dplyr)
 library(skimr)
 library(visdat)
-library(datadigest)
+#Library Markdown
+library(rmarkdown)
+library(tinytex)
 #Library PCA
 library(factoextra)
 library(corrplot)
@@ -36,17 +33,16 @@ ui <- fluidPage(
   dashboardPage(
     dashboardHeader(
       title = "PCA", titleWidth = 300
-      
     ), #Header
     
     dashboardSidebar(width = 300,
       sidebarMenu(
-        menuItem("Tutorial", icon = icon("youtube"), href =""),
+        menuItem("Tutorial", icon = icon("youtube"), href ="https://youtu.be/sq0bUkDNBsA"),
         menuItem("Dataset", tabName = "Dataset"),
         menuItem("Pre-Processing", tabName = "Variabel"),
         menuItem("PCA", dropdownButton = TRUE,
                  menuSubItem("Data PCA", tabName = "Data2"),
-                 menuSubItem("Komputasi PCA", tabName = "Komputasi"),
+                 menuSubItem("Komputasi PCA", tabName = "Komputasi"), 
                  menuSubItem("Visualisasi PCA", tabName = "Visualisasi")
         ),
         menuItem("Data Report", tabName = "DataReport"),
@@ -173,6 +169,7 @@ ui <- fluidPage(
                     div(withSpinner(verbatimTextOutput("hasil_summaryPCA"))),
                     h5("Rangkuman nilai statistik PCA pada tiap dimensi PC",
                        style= "text-align:center"),
+                    div(actionButton('cetak_gambar12','Download', icon = icon('download'), style="display: block; margin-left: auto; margin-right: auto;")),
                   ),
                   box(
                     title = "Model PCA", background = "blue", solidHeader = TRUE,
@@ -242,8 +239,13 @@ ui <- fluidPage(
         ), #tabname Visualisasi
         
         tabItem(tabName = "DataReport",
-                h2("Data Report", style = "text-align:center")
-        ) #tabName Report
+                h2("Data Report", style = "text-align:center"),
+                box(
+                  title = "Data Report", background = "blue", solidHeader = TRUE,
+                  radioButtons("reportData", "Select Output", c('HTML'), inline = TRUE),
+                  div(style = "text-align:center", downloadButton("downloadData", "Download Data Report"))
+                )
+        ) #tabName Data Report
         
       ) #tabitems
 
